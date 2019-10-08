@@ -4,6 +4,7 @@
 #include "lcd_icon.h"
 
 // define
+#define COLOR_RGB(red,green,blue) ( ((red>>3)<<11) | ((green>>2)<<5) | (blue>>3) )
 
 // 各種インスタンス
 TFT_eSprite M5_Img = TFT_eSprite(&M5.Lcd); // Sprite object
@@ -42,6 +43,20 @@ void lcd_loop() {
   // M5.Lcd.fillScreen(BLACK); // 
   M5_Img.pushSprite(0, 0);
   M5_Img.fillSprite(BLACK);
+
+  // 背景
+  {
+    M5_Img.fillRect(
+       0*8, (6*8 + 4 - 4) - 2, 
+      20*8, (7*8 + 4 - 4) + 2, 
+      COLOR_RGB(0x8Eu, 0x1Eu, 0xFFu)
+    );
+    M5_Img.fillRect(
+       0*8, (7*8 + 4) - 2, 
+      20*8, (9*8 + 4) + 2, 
+      COLOR_RGB(0xCCu, 0xCCu, 0xFFu)
+    );
+  }
 
   lcd_draw_sensor_data();
   lcd_draw_icon_conn();
@@ -125,13 +140,17 @@ void lcd_draw_icon_conn() {
 }
 
 void lcd_draw_ip() {
+  M5_Img.setTextColor( COLOR_RGB(0x1Eu, 0x1Eu, 0xFFu) );
   int16_t x = 3*8 + 4;
   int16_t y = 7*8 + 4;
   M5_Img.setCursor(x, y);
   M5_Img.println(WiFi.localIP());
+  M5_Img.setTextColor(TFT_WHITE);
 }
 
 void lcd_draw_last() {
+  M5_Img.setTextColor( COLOR_RGB(0x1Eu, 0x1Eu, 0xFFu) );
+
   int16_t x = 3*8 + 4;
   int16_t y = 8*8 + 4;
 
@@ -141,4 +160,6 @@ void lcd_draw_last() {
   M5_Img.setCursor(x, y);
   M5_Img.print("Lst:");
   M5_Img.println(buf);
+
+  M5_Img.setTextColor(TFT_WHITE);
 }
