@@ -141,3 +141,7 @@ bool beebotte_connected() {
     }
     return false;
 }
+
+void beebotte_disconnect() {
+    client.disconnect();
+}

@@ -68,7 +68,15 @@ void loop() {
       // 
       // https://lang-ship.com/reference/unofficial/M5StickC/Class/AXP192/
       // 
-      M5.Axp.DeepSleep( (CYC_MS_SENDOR_SEND - loopTime_) * 1000 );
+      
+      // 上位から順に切断して、最後に deep sleep する
+      beebotte_disconnect();
+      wifi_disconnect();
+      long time_in_ms = max(CYC_MS_SENDOR_SEND - loopTime_, (long)(CYC_MS_SENDOR_SEND / 5)); // 頻繁に起動しないように、最短でも 1/5 はsleepさせる
+      M5.Axp.DeepSleep( SLEEP_MSEC(time_in_ms) );
+      
+      // deep sleep 以降までのダミーの待ち時間（適当）
+      delay(1000);
     }
     
     cnt_lcd_ = ( cnt_lcd_ + 1 );

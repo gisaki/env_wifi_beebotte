@@ -52,3 +52,7 @@ void wifi_loop() {
 bool wifi_connected() {
     return (wifi_connected_)? true: false;
 }
+
+void wifi_disconnect() {
+    WiFi.disconnect();
+}
