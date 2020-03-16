@@ -86,13 +86,33 @@ void lcd_draw_sensor_data() {
     M5_Img.setCursor(x, y);
     if (pos_ == 0) { snprintf(buf, sizeof(buf), "%.1f", tmp); }
     if (pos_ == 1) { snprintf(buf, sizeof(buf), "%.1f", hum); }
-    if (pos_ == 2) { snprintf(buf, sizeof(buf), "%.0f", pressure / 100.0f); }
+    if (pos_ == 2) {
+      snprintf(buf, sizeof(buf), "%f", pressure / 100.0f);
+      for (int i=0; i < sizeof(buf); i++){
+        if (buf[i] == '.')  { buf[i] = '\0'; break; } // .以降を表示しない
+        if (buf[i] == '\0') { break; } // 見つからず
+      }
+    }
     M5_Img.print(buf);
     M5_Img.setTextFont(FONT_16px);
     if (pos_ == 0) { M5_Img.print("C"); }
     if (pos_ == 1) { M5_Img.print("%"); }
     M5_Img.setTextFont(FONT_8px);
-    if (pos_ == 2) { M5_Img.print("hPa"); }
+    if (pos_ == 2) { 
+      {
+        snprintf(buf, sizeof(buf), "%f", pressure / 100.0f);
+        int16_t offcet = 0;
+        for (int i=0; i < sizeof(buf); i++){
+          if (buf[i] == '.')  { offcet = i; break; } // .の位置を offcet として確定
+          if (buf[i] == '\0') { offcet = 0; break; } // 見つからず
+        }
+        M5_Img.print(&(buf[offcet]));
+      }
+      x = 16*8 + 4;
+      y = 4*8 + 4;
+      M5_Img.setCursor(x, y);
+      M5_Img.print("hPa");
+    }
   }
   {
     x = 0*8 + 4;
